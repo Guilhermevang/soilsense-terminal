@@ -1,0 +1,6 @@
+keyboard==0.13.5
+markdown-it-py==3.0.0
+mdurl==0.1.2
+Pygments==2.18.0
+rich==13.7.1
+simple-term-menu==1.6.4
