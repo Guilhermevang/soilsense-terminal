@@ -1,11 +1,11 @@
 from rich.status import Status
-import requests
-import json
+# import requests
+# import json
 import contract
 
 
 class Tasks:
-    def fetchSatellitesTLE(status:Status, task:contract.PreTask, page=1):
+    def fetchSatellitesTLE(status:Status, task:contract.Waiter, page=1):
         # res = requests.get(
         #     url="https://tle.ivanstanojevic.me/api/tle",
         #     params={
