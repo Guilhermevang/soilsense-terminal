@@ -1,6 +1,6 @@
 from rich.status import Status
-# import requests
-# import json
+import requests
+import json
 import contract
 import time
 

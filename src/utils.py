@@ -1,4 +1,7 @@
 # import time
+from hashlib import sha256
+from io import TextIOWrapper
+import json
 import time
 from typing import Callable, Literal
 from rich.console import Console
@@ -20,7 +23,7 @@ class Basics:
 
     def runPreTasks(self, clear:Callable):
         pre_tasks = [
-            contract.Waiter(task=Tasks.fetchSatellitesTLE, label="Buscando satélites disponíveis"),
+            # contract.Waiter(task=Tasks.fetchSatellitesTLE, label="Buscando satélites disponíveis"),
         ]
 
         order = contract.Order(label="Iniciando programa...")
@@ -85,5 +88,29 @@ class Window:
 
     def run(self, window:Callable):
         """ Roda a janela """
-        self.draw()
+        self.clear()
         window(clear=self.clear) # Chama a função de Callback passando o método que limpa a tela
+
+class Utils:
+    def __init__(self) -> None:
+        pass
+
+    def openFile(self, path:str) -> TextIOWrapper:
+        f = open(path, 'r', encoding="utf8")
+        return f
+
+    def readTextFile(self, path:str) -> str:
+        f = self.openFile(path)
+        t = f.read()
+        return t
+    
+    def readJsonFile(self, path:str):
+        f = self.openFile(path)
+        j = json.load(f)
+        return j
+    
+    def calculateHash(self, file_content:str):
+        file_content = file_content.encode('utf-8')
+        h256 = sha256()
+        h256.update(file_content)
+        return h256.hexdigest()
