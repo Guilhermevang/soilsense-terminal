@@ -5,8 +5,9 @@ from utils import *
 
 pretty.install()
 
-console = Console()
-
+# Apresentação inicial
 intro = Basics()
 
-intro.start()
+# Inicia uma nova 'janela' e roda o código dentro de 'intro'
+window = Window()
+window.run(intro.runPreTasks)

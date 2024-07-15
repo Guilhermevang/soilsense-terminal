@@ -2,6 +2,7 @@ from rich.status import Status
 # import requests
 # import json
 import contract
+import time
 
 
 class Tasks:
@@ -17,4 +18,5 @@ class Tasks:
         # task.complete = f"{response['totalItems']} satélites encontrados";
         task.complete = f"1546 satélites encontrados";
         # status.update(f"A tarefa está demorando mais que o esperado...", spinner="simpleDots")
+        time.sleep(1)
         return
