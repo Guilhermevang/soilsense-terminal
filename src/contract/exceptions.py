@@ -8,3 +8,6 @@ class InvalidValue(CommonBaseException):
 
 class RestException(CommonBaseException):
     pass
+
+class NotAuthorized(CommonBaseException):
+    pass

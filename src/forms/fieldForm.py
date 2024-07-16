@@ -8,6 +8,8 @@ from restRepositories.soilsense import FeaturesRestRepository
 from .baseForm import BaseForm
 import contract
 from rich.status import Status
+from rich.progress import Progress
+from models import UserModel
 
 
 class FieldForm(BaseForm):
@@ -17,6 +19,7 @@ class FieldForm(BaseForm):
     def __init__(self, featuresRestRepository:FeaturesRestRepository) -> None:
         super().__init__()
         self._featuresRestRepository:FeaturesRestRepository = featuresRestRepository
+        
         self.file_path          :str = None
         self.file_content       :str | any = None
         self.hash               :str = None
@@ -29,7 +32,6 @@ class FieldForm(BaseForm):
 
         tasks = [
             contract.Waiter(task=self.setFileContent, label='Extraindo dados do arquivo'),
-            # contract.Waiter(task=self.calculateHash, label='Calculando HASH do arquivo com base nas coordenadas'),
             contract.Waiter(task=self.checkForType, label='Verificando tipo da coleção'),
             contract.Waiter(task=self.checkForFeatures, label='Verificando existência das features'),
             contract.Waiter(task=self.insertPendingFeatures, label='Inserindo talhões pendentes'),
@@ -63,6 +65,9 @@ class FieldForm(BaseForm):
         pass
 
     def checkForFeatures(self, status:Status, task:contract.Waiter):
+        """
+        Itera por todos talhões e verifica quais já estão salvos, assim como os pendentes
+        """
         # Cria uma lista com as Features
         if self.feature_type == 'FeatureCollection':
             self.features = self.file_content['features']
@@ -72,23 +77,25 @@ class FieldForm(BaseForm):
         # Armazena o número total de -> features, features que já estão salvas no AWS S3, além dos talhões que deverão ser salvos
         total_features  :int = len(self.features)
         total_saved     :int = 0
-        
+
         for (index, feature) in enumerate(self.features):
+            # Calcula o HASH do talhão com base nas coordenadas
             self.calculateHash(index)
+
+            # Verifica se talhão existe requisitando API passando o HASH calculado
             feature_exists:bool = self.checkFeatureFromHash()
 
-            # Se existir incrementa no número de Features salvas, caso contrário adiciona a Feature ao final da lista de Features pendentes
+            # Se existir incrementa os talhões salvos, se não, adiciona talhão na lista de pendências
             if feature_exists:
                 total_saved += 1
             else:
-                # Atualiza a lista de Features pendentes, apenas os talhões que ainda não foram inseridos
                 self.pending_features.append(feature)
 
-            task.loading = f'{index+1}/{total_features} talhões verificados'
-            status.update(f"{task.loading}", spinner=task.spinner)
+            task.loading = f'{index+1} de {total_features} talhões verificados'
+            status.update(task.loading)
             
         # Atualiza o texto
-        task.complete = f'{total_saved}/{total_features} Talhões já existem'
+        task.complete = f'{total_saved} de {total_features} talhões já existem'
         pass
 
     def calculateHash(self, feature_index:int):
@@ -102,7 +109,7 @@ class FieldForm(BaseForm):
         if len(self.hash) <= 0:
             raise Exception('HASH vazio')
         
-        r:bool = self._featuresRestRepository.checkFeatureFromHash(self.hash)
+        r:bool = self._featuresRestRepository.checkFeatureFromHash(self.hash, authorization=UserModel._access_token)
         return r
     
     def insertPendingFeatures(self, status:Status, task:contract.Waiter):
