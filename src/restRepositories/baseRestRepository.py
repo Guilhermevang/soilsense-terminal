@@ -1,5 +1,6 @@
 import json
 import requests
+from contract import exceptions
 
 class BaseRestRepository:
     """
@@ -15,32 +16,32 @@ class BaseRestRepository:
             self.Success:bool = Success
             self.DataAsString:str = DataAsString
     
-    def get(self, url:str='', params:dict={}) -> BaseRestResponse:
+    def get(self, route:str='', params:dict={}) -> BaseRestResponse:
         """
         Método GET
         """
         try:
             res = requests.get(
-                url=f"{self.BASE_URL}/{url}",
+                url=f"{self.BASE_URL}/{route}",
                 params=params,
                 verify=False # NÃO RECOMENDADO...
             )
             response = json.loads(res.text)
             return self.BaseRestResponse(**response)
         except:
-            raise Exception('[ERROR] GET: Houve um erro')
+            raise exceptions.RestException('[ERROR] GET: Houve um erro')
         
-    def post(self, url:str='', body:dict={}) -> BaseRestResponse:
+    def post(self, route:str='', body:dict={}) -> BaseRestResponse:
         """
         Método POST
         """
         try:
             res = requests.post(
-                url=f"{self.BASE_URL}/{url}",
+                url=f"{self.BASE_URL}/{route}",
                 json=body,
                 verify=False
             )
             response = json.loads(res.text)
             return self.BaseRestResponse(**response)
         except:
-            raise Exception('[ERROR] POST: Houve um erro')
+            raise exceptions.RestException('[ERROR] POST: Houve um erro')

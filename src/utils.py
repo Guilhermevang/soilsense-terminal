@@ -88,6 +88,7 @@ class Window:
 
     def run(self, window:Callable):
         """ Roda a janela """
+        self.console.set_window_title('SoilSense')
         self.clear()
         window(clear=self.clear) # Chama a função de Callback passando o método que limpa a tela
 

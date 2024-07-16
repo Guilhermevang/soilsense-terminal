@@ -2,7 +2,7 @@ from ..baseRestRepository import BaseRestRepository
 
 class FeaturesRestRepository(BaseRestRepository):
     """
-    Esse repositório REST fará requisições à API SoilSense (interna)
+    Esse repositório REST fará requisições à API SoilSense (interna) na rota /v1/Features
     """
     def __init__(self, base_url:str='') -> None:
         super().__init__(base_url=base_url)

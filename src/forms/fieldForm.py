@@ -40,7 +40,7 @@ class FieldForm(BaseForm):
         pass
 
     def getFieldFile(self):
-        value = self.console.input('Arraste o arquivo do talhão (GEOJson) > ')
+        value = self.console.input('Arraste o arquivo do talhão (GEOJson): ')
         value = re.sub('(^\"|\"$)', '', value) # Remove as aspas do inicio e fim
         self.file_path = value
         self.console.print(f'Endereço do arquivo (talhão): {self.file_path}')
