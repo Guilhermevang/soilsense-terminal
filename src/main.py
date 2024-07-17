@@ -47,7 +47,7 @@ class Main:
         except:
             rich.print('Houve um erro não tratado ao autenticar o usuário, por favor tente novamente mais tarde.\n')
             time.sleep(2)
-            # self.login()
+            self.login()
             raise
 
         self.run()
