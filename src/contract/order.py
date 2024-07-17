@@ -28,18 +28,18 @@ class Order:
         return self.tasks.pop(index)
 
     def start(self):
-        # try:
-        with self.console.status(self.colored_label, spinner=self.spinner) as status:
-            while self.tasks:
-                task = self.remove()
-                status.update(f"{task.loading}", spinner=task.spinner)
-                task.execute(status, task)
-                self.console.log(task.complete)
-        #     self.failed = False
-        # except:
-        #     self.failed = True
-        # finally:
-        return self
+        try:
+            with self.console.status(self.colored_label, spinner=self.spinner) as status:
+                while self.tasks:
+                    task = self.remove()
+                    status.update(f"{task.loading}", spinner=task.spinner)
+                    task.execute(status, task)
+                    self.console.log(task.complete)
+                self.failed = False
+        except:
+            self.failed = True
+        finally:
+            return self
     
     def then(self, success:str="Pronto", failure:str="A execução falhou"):
         if self.failed:
