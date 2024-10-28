@@ -1,2 +1,2 @@
-from .fieldForm import FieldForm
+from .fieldForm import InsertFeaturesForm
 from .loginForm import LoginForm

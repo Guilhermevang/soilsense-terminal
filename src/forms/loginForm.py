@@ -26,7 +26,7 @@ class LoginForm(BaseForm):
 
             order = contract.Order('Autenticando usuário...')
             (order
-             .add(*[contract.Waiter(task=self.fetchSignIn, label='Autenticando usuário')])
+             .add(*[contract.Waiter(task=self.fetch_sign_in, label='Autenticando usuário')])
              .start()
              .then(success='Usuário autenticado com sucesso!', failure='Não foi possível autenticar o usuário.')
             )
@@ -79,7 +79,7 @@ class LoginForm(BaseForm):
         
         return True
 
-    def fetchSignIn(self, status:Status, task:contract.Waiter):
+    def fetch_sign_in(self, status:Status, task:contract.Waiter):
         r = self._sessionRestRepository.signIn(email=UserModel._email, password=self.password)
 
         if r.success == False:

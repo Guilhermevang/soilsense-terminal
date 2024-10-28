@@ -11,6 +11,7 @@ import urllib3
 from models import UserModel
 import rich
 import inquirer
+import pages
 
 
 urllib3.disable_warnings()
@@ -59,7 +60,8 @@ class Main:
                 message="Escolha uma opção",
                 choices=[
                     ("Inserir novos talhões", "new"),
-                    ("Analisar talhões", "analysis"),
+                    ("Listar meus talhões", "list"),
+                    ("Analisar dados de sensoriamento", "analysis"),
                     ("Sair", "logoff")
                 ]
             )
@@ -73,10 +75,16 @@ class Main:
 
         match self._mode:
             case 'new':
-                fieldForm = forms.FieldForm(featuresRestRepository=self.featuresRestRepository)
-                self.window.run(fieldForm.run)
+                newFeaturesForm = forms.InsertFeaturesForm(featuresRestRepository=self.featuresRestRepository)
+                self.window.run(newFeaturesForm.run)
+                self.run()
+            case 'list':
+                listFeaturesPage = pages.ListFeaturesPage(featuresRestRepository=self.featuresRestRepository)
+                self.window.run(listFeaturesPage.run)
                 self.run()
             case 'analysis':
+                analysisPage = pages.AnalysisPage(featuresRestRepository=self.featuresRestRepository)
+                self.window.run(analysisPage.run)
                 self.run()
             case 'logoff':
                 UserModel().unset_session()
